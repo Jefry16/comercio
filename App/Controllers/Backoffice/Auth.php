@@ -37,4 +37,9 @@ class Auth extends \Core\Controller
 
         }
     }
+
+    public function logoutAction()
+    {
+        ModulesAuth::logout();
+    }
 }
