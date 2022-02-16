@@ -20,7 +20,7 @@ class Config
      * Database name
      * @var string
      */
-    const DB_NAME = 'ccb';
+    const DB_NAME = 'comercio';
 
 
     /**

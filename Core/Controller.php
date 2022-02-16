@@ -86,6 +86,13 @@ abstract class Controller
         header('Location: http://' . $_SERVER['HTTP_HOST'] . $url, true, 303);
     }
 
+    protected function redirectIfNotAdmin()
+    {
+         if (!isset($_SESSION['adminType'])) {
+            $this->redirect('/admin/auth/login');
+         }
+    }
+
     protected function redirectIfNotRequestMethod($method, $url)
     {
         if ($_SERVER['REQUEST_METHOD'] != $method) {
@@ -96,37 +103,11 @@ abstract class Controller
         }
     }
 
-    protected function redirectIfNoneLoggedIn()
+
+    protected function isPostRequest()
     {
-        if (!Auth::getCurrentMember() && !Auth::getCurrentAdmin()) {
-
-            Auth::setLastPage();
-            Flashmessage::set('You need to log in to view this page', Flashmessage::INFO);
-            $this->redirect('/login');
-
-            exit;
-        }
+        return $_SERVER['REQUEST_METHOD'] === 'POST';
     }
 
-    protected function redirectIfNotAdmin()
-    {
-        if (!Auth::getCurrentAdmin()) {
 
-            Auth::setLastPage();
-            Flashmessage::set('You need to log in as an admin to view this page', Flashmessage::INFO);
-            $this->redirect('/login');
-
-            exit;
-        }
-    }
-
-    protected function redirectWhenAdminOrUserLoggedIn($url = '/')
-    {
-        if (isset($_SESSION[Config::$member_type]) || isset($_SESSION['admin_id'])) {
-
-            header('Location: http://' . $_SERVER['HTTP_HOST'] . $url, true, 303);
-
-            exit;
-        }
-    }
 }

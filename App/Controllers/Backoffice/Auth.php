@@ -2,6 +2,8 @@
 
 namespace App\Controllers\Backoffice;
 
+use App\Models\Admin;
+use App\Modules\Auth as ModulesAuth;
 use \Core\View;
 
 
@@ -10,6 +12,29 @@ class Auth extends \Core\Controller
     
     public function loginAction()
     {
-        View::renderTemplate('Backoffice/Auth/login.html');
+        if ($this->isPostRequest()) {
+
+            $admin = Admin::authenticate($_POST['email'], $_POST['password']);
+
+            if ($admin) {
+
+                ModulesAuth::login($admin);
+
+                $this->redirect('/admin/panel/home');
+
+            } else {
+
+                View::renderTemplate('Backoffice/Auth/login.html', [
+                    'badCredentials' => 'Bad credentials'
+                ]);
+
+            }
+
+
+        } else {
+
+            View::renderTemplate('Backoffice/Auth/login.html');
+
+        }
     }
 }
