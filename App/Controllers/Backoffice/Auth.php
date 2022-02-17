@@ -9,7 +9,10 @@ use \Core\View;
 
 class Auth extends \Core\Controller
 {
-    
+    protected function before()
+    {
+        $this->redirectIfAdminLoggedIn();
+    }
     public function loginAction()
     {
         if ($this->isPostRequest()) {
@@ -30,16 +33,15 @@ class Auth extends \Core\Controller
 
             }
 
-
         } else {
 
             View::renderTemplate('Backoffice/Auth/login.html');
-
         }
     }
 
     public function logoutAction()
     {
         ModulesAuth::logout();
+        $this->redirect('/admin/auth/login');
     }
 }

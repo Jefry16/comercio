@@ -93,6 +93,13 @@ abstract class Controller
          }
     }
 
+    protected function redirectIfAdminLoggedIn()
+    {
+        if (isset($_SESSION['adminType'])) {
+            $this->redirect('/admin/panel/home');
+         }
+    }
+
     protected function redirectIfNotRequestMethod($method, $url)
     {
         if ($_SERVER['REQUEST_METHOD'] != $method) {

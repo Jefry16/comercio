@@ -23,6 +23,10 @@ class Auth
         return Admin::findById($_SESSION['id'] ?? '');
     }
 
+    public static function getAdminType()
+    {
+        return $_SESSION['adminType'] ?? false;
+    }
     public static function logout()
     {
         $_SESSION = [];
@@ -42,5 +46,7 @@ class Auth
         }
         session_destroy();
     }
+
+
 
 }

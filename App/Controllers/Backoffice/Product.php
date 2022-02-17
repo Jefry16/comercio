@@ -5,7 +5,7 @@ namespace App\Controllers\Backoffice;
 use \Core\View;
 
 
-class Panel extends \Core\Controller
+class Product extends \Core\Controller
 {
     protected function before()
     {
@@ -14,7 +14,7 @@ class Panel extends \Core\Controller
 
     public function homeAction()
     {
-        View::renderTemplate('Backoffice/Initial/index.html');
+        View::renderTemplate('Backoffice/Product/index.html');
     }
 
 
