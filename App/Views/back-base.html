@@ -9,10 +9,14 @@
     <link rel="stylesheet" href="/css/global.css">
 </head>
 <body>
+
     {% if admin %}
-        {% include "Themes/sidebar.html" %}
-        <a href="/admin/auth/logout">Log out</a>
+        <div class="container">
+            {% include "Themes/sidebar.html" %}
+            <a href="/admin/auth/logout">Log out</a>
+        </div>
     {% endif %}
+
     {% block content %}{% endblock %}
     {% block scripts %}{% endblock %}
 

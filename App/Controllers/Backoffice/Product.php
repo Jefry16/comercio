@@ -17,5 +17,10 @@ class Product extends \Core\Controller
         View::renderTemplate('Backoffice/Product/index.html');
     }
 
+    public function addAction()
+    {
+        View::renderTemplate('Backoffice/Product/add.html');
+    }
+
 
 }

@@ -1,0 +1,42 @@
+{% extends "back-base.html" %}
+
+{% block content %}
+    <div class="container">
+        <form action="">
+            <h1>add new product</h1>
+            <label>name <input type="text" name="name"></label>
+            <label>price <input type="number" name="price"></label>
+            <label>weight <input type="number" name="weight"></label>
+            <label>cart description <input type="text" name="cartDesc"></label>
+            <label>short description <input type="text" name="shortDesc"></label>
+            <label>long description <input type="text" name="longDesc"></label>
+            <label>thumbnail <input type="file" name="thumbnail"></label>
+            <label>images <input type="file" name="images"></label>
+            <label>stock <input type="number" name="stock"></label>
+            
+            <fieldset>
+                <legend>Is active?</legend>
+                <label> 
+                yes<input type="radio" name="live" value="1" checked>
+                </label>
+                <label> 
+                no<input type="radio" name="live" value="0">
+                </label>
+            </fieldset>
+
+            <fieldset>
+                <legend>Is unlimited?</legend>
+                <label> 
+                yes<input type="radio" name="limited" value="1" checked>
+                </label>
+                <label> 
+                no<input type="radio" name="limited" value="0">
+                </label>
+            </fieldset>
+
+            <label>location <input type="text" name="location"></label>
+
+            <button>Save</button>
+        </form>
+    </div>
+{% endblock %}
