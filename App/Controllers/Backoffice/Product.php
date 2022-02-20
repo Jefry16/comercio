@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Backoffice;
 
+use App\Models\Product as ModelsProduct;
 use \Core\View;
 
 
@@ -19,7 +20,13 @@ class Product extends \Core\Controller
 
     public function addAction()
     {
+        if($this->checkRequestMethod('POST')){
+            $product = new ModelsProduct($_POST);
+            $product->save();
+
+        }else{
         View::renderTemplate('Backoffice/Product/add.html');
+        }
     }
 
 

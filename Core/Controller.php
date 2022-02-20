@@ -111,9 +111,9 @@ abstract class Controller
     }
 
 
-    protected function isPostRequest()
+    protected function checkRequestMethod($method)
     {
-        return $_SERVER['REQUEST_METHOD'] === 'POST';
+        return $_SERVER['REQUEST_METHOD'] === $method;
     }
 
 

@@ -2,35 +2,36 @@
 
 {% block content %}
     <div class="container">
-        <form action="">
+        <form action="/admin/product/add" method="POST">
             <h1>add new product</h1>
             <label>name <input type="text" name="name"></label>
-            <label>price <input type="number" name="price"></label>
+            <label>price <input type="number" name="price" step="0.01" min="0"></label>
             <label>weight <input type="number" name="weight"></label>
             <label>cart description <input type="text" name="cartDesc"></label>
             <label>short description <input type="text" name="shortDesc"></label>
             <label>long description <input type="text" name="longDesc"></label>
-            <label>thumbnail <input type="file" name="thumbnail"></label>
+            <label>thumbnail <input type="file" name="thumb"></label>
             <label>images <input type="file" name="images"></label>
             <label>stock <input type="number" name="stock"></label>
+            <label>category <input type="number" name="category"></label>
             
             <fieldset>
                 <legend>Is active?</legend>
                 <label> 
-                yes<input type="radio" name="live" value="1" checked>
+                yes<input type="radio" name="active" value="1" checked>
                 </label>
                 <label> 
-                no<input type="radio" name="live" value="0">
+                no<input type="radio" name="active" value="0">
                 </label>
             </fieldset>
 
             <fieldset>
                 <legend>Is unlimited?</legend>
                 <label> 
-                yes<input type="radio" name="limited" value="1" checked>
+                yes<input type="radio" name="unlimited" value="1" checked>
                 </label>
                 <label> 
-                no<input type="radio" name="limited" value="0">
+                no<input type="radio" name="unlimited" value="0">
                 </label>
             </fieldset>
 

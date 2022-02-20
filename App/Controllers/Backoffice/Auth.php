@@ -15,7 +15,7 @@ class Auth extends \Core\Controller
     }
     public function loginAction()
     {
-        if ($this->isPostRequest()) {
+        if ($this->checkRequestMethod('POST')) {
 
             $admin = Admin::authenticate($_POST['email'], $_POST['password']);
 
