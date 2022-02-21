@@ -5,14 +5,13 @@ namespace App\Modules;
 
 class ImageUpload
 {
-  public static function singleImageFromProduct($name)
+  public static function singleImageFromProduct()
   {
-    echo is_dir(__DIR__ . '/../../public/uploads');
+    
     $error = 0;
+    if (isset($_FILES['thumb']) && !$_FILES['thumb']['error']) {
 
-    if (isset($_FILES[$name]) && !$_FILES[$name]['error']) {
-
-      if ($_FILES[$name]['size'] > 3145728) {
+      if ($_FILES['thumb']['size'] > 3145728) {
 
         $error = ['This file size can\'t be longer than 3 megabytes.'];
 
@@ -22,7 +21,7 @@ class ImageUpload
       $mime_types = ['image/gif', 'image/png', 'image/jpeg', 'image/webp', 'image/svg+xml'];
 
       $finfo = finfo_open(FILEINFO_MIME_TYPE);
-      $mime_type = finfo_file($finfo, $_FILES[$name]['tmp_name']);
+      $mime_type = finfo_file($finfo, $_FILES['thumb']['tmp_name']);
 
       if (!in_array($mime_type, $mime_types)) {
 
@@ -31,16 +30,33 @@ class ImageUpload
         return $error;
       }
 
-      $pathinfo = pathinfo($_FILES[$name]["name"]);
+      $pathinfo = pathinfo($_FILES['thumb']["name"]);
       $base = $pathinfo['filename'];
 
       $base = preg_replace('/[^a-zA-Z0-9_-]/', '_', $base);
 
       $base = mb_substr($base, 0, 200);
 
-      $filename = $base . "." . $pathinfo['extension'];
+      $year = date('Y');
 
-      $destination = dirname($_SERVER['SERVER_NAME']) . '/uploads/' . $filename;
+      $month = date('m');
+
+      if(!is_dir(__DIR__ . '/../../public/uploads/'.$year)){
+        
+        mkdir(__DIR__ . '/../../public/uploads/'.$year, 0777, true);
+
+      }
+
+      if(!is_dir(__DIR__ . '/../../public/uploads/'.$year.'/'.$month)){
+        
+        mkdir(__DIR__ . '/../../public/uploads/'.$year.'/'.$month, 0777, true);
+
+      }
+      
+      
+      $filename = $year . '/'. $month . '/' . $base . "." . $pathinfo['extension'];
+
+      $destination = dirname(__DIR__ . '/../../public/uploads/') . '/uploads/' . $filename;
 
 
 
@@ -48,18 +64,22 @@ class ImageUpload
 
       while (file_exists($destination)) {
 
-        $filename = $base . "-$i." . $pathinfo['extension'];
+        $filename = $year . '/'. $month . '/' . $base . "-$i." . $pathinfo['extension'];
         $destination = dirname($_SERVER['SERVER_NAME']) . '/uploads/' . $filename;
 
         $i++;
       }
 
-      if (move_uploaded_file($_FILES['$name']['tmp_name'], $destination)) {
+      if (move_uploaded_file($_FILES['thumb']['tmp_name'], $destination)) {
+        
         $error = $filename;
 
         return $error;
+
       } else {
-        $error = ['No se pudo subir el archivo'];
+        
+        $error = ['The file for the thumbnail could not be uploaded.'];
+        
         return $error;
       }
     }

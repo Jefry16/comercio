@@ -23,7 +23,8 @@ class Product extends \Core\Model
     {
         $this->validateName($this->name);
         $this->validatePrice($this->price);
-
+        $this->validateThumbnail();
+        
         if(empty($this->errors)){
             $sql = "INSERT INTO products 
             (ProductSKU, 
@@ -66,14 +67,13 @@ class Product extends \Core\Model
             $stmt->bindValue(':shortDesc', $this->shortDesc, PDO::PARAM_STR);
             $stmt->bindValue(':longDesc', $this->longDesc, PDO::PARAM_STR);
             $stmt->bindValue(':thumb', $this->thumb, PDO::PARAM_STR);
-            $stmt->bindValue(':images', $this->images, PDO::PARAM_STR);
+            $stmt->bindValue(':images', 'h', PDO::PARAM_STR);
             $stmt->bindValue(':category', $this->category, PDO::PARAM_INT);
             $stmt->bindValue(':stock', $this->stock, PDO::PARAM_INT);
             $stmt->bindValue(':active', $this->active, PDO::PARAM_INT);
             $stmt->bindValue(':unlimited', $this->unlimited, PDO::PARAM_INT);
             $stmt->bindValue(':location', $this->location, PDO::PARAM_STR);
             
-            ImageUpload::singleImageFromProduct(1);
             return $stmt->execute();
 
         }
@@ -184,5 +184,27 @@ class Product extends \Core\Model
         if($value !== 0 && $value !== 1){
             $this->errors['unlimited'] = 'Invalid value for unlimited.';
         }
+    }
+
+    private function validateThumbnail()
+    {
+        $uploadResult = ImageUpload::singleImageFromProduct();
+
+        if ($uploadResult === 0) {
+            $this->thumb = null;
+            return;
+        }
+
+        if(is_array($uploadResult)){
+            $this->errors['thumb'] = $uploadResult[0];
+            return;
+        }
+
+        $this->thumb = $uploadResult;
+    }
+
+    private function validateImages()
+    {
+
     }
 }

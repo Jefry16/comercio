@@ -2,7 +2,7 @@
 
 {% block content %}
     <div class="container">
-        <form action="/admin/product/add" method="POST">
+        <form action="/admin/product/add" method="POST" enctype="multipart/form-data">
             <h1>add new product</h1>
             <label>name <input type="text" name="name"></label>
             <label>price <input type="number" name="price" step="0.01" min="0"></label>
@@ -10,7 +10,7 @@
             <label>cart description <input type="text" name="cartDesc"></label>
             <label>short description <input type="text" name="shortDesc"></label>
             <label>long description <input type="text" name="longDesc"></label>
-            <label>thumbnail <input type="file" name="thumb"></label>
+            <label>thumbnail <input type="file" name="thumb" accept=".gif, .png, .jpeg, .webp, .svg"></label>
             <label>images <input type="file" name="images"></label>
             <label>stock <input type="number" name="stock"></label>
             <label>category <input type="number" name="category"></label>

@@ -21,11 +21,14 @@ class Product extends \Core\Controller
     public function addAction()
     {
         if($this->checkRequestMethod('POST')){
+           
             $product = new ModelsProduct($_POST);
+           
             $product->save();
 
-        }else{
-        View::renderTemplate('Backoffice/Product/add.html');
+        } else {
+            
+            View::renderTemplate('Backoffice/Product/add.html');
         }
     }
 
