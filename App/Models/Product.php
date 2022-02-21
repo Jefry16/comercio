@@ -67,7 +67,7 @@ class Product extends \Core\Model
             $stmt->bindValue(':shortDesc', $this->shortDesc, PDO::PARAM_STR);
             $stmt->bindValue(':longDesc', $this->longDesc, PDO::PARAM_STR);
             $stmt->bindValue(':thumb', $this->thumb, PDO::PARAM_STR);
-            $stmt->bindValue(':images', 'h', PDO::PARAM_STR);
+            $stmt->bindValue(':images', ImageUpload::imagesFromNewProduct(), PDO::PARAM_STR);
             $stmt->bindValue(':category', $this->category, PDO::PARAM_INT);
             $stmt->bindValue(':stock', $this->stock, PDO::PARAM_INT);
             $stmt->bindValue(':active', $this->active, PDO::PARAM_INT);
@@ -188,7 +188,7 @@ class Product extends \Core\Model
 
     private function validateThumbnail()
     {
-        $uploadResult = ImageUpload::singleImageFromProduct();
+        $uploadResult = ImageUpload::singleImageNewProduct();
 
         if ($uploadResult === 0) {
             $this->thumb = null;

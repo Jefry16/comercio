@@ -3,10 +3,11 @@
 namespace App\Controllers\Backoffice;
 
 use App\Models\Product as ModelsProduct;
+use App\Modules\ImageUpload;
 use \Core\View;
+use Exception;
 
-
-class Product extends \Core\Controller
+class Products extends \Core\Controller
 {
     protected function before()
     {
@@ -21,7 +22,6 @@ class Product extends \Core\Controller
     public function addAction()
     {
         if($this->checkRequestMethod('POST')){
-           
             $product = new ModelsProduct($_POST);
            
             $product->save();
