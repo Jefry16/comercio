@@ -24,15 +24,7 @@ session_start();
  * Routing
  */
 $router = new Core\Router();
-
-
-
-
+mkdir('./ok', 0755, true);
 //backoffice routes
-
 $router->add('admin/{controller}/{action}', ['namespace' => 'Backoffice']);
-
-
-
-    
 $router->dispatch($_SERVER['QUERY_STRING']);
