@@ -25,7 +25,10 @@ class Products extends \Core\Controller
             $product = new ModelsProduct($_POST);
            
             $product->save();
-
+            
+            if(!empty($product->errors)){
+                var_dump($product->errors);
+            }
         } else {
             
             View::renderTemplate('Backoffice/Product/add.html');

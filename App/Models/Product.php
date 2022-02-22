@@ -21,11 +21,9 @@ class Product extends \Core\Model
 
     public function save()
     {
-        $this->validateName($this->name);
-        $this->validatePrice($this->price);
-        $this->validateThumbnail();
-        
-        if(empty($this->errors)){
+        $this->validateBeforeSaving();
+
+        if (empty($this->errors)) {
             $sql = "INSERT INTO products 
             (ProductSKU, 
             ProductName, 
@@ -73,26 +71,60 @@ class Product extends \Core\Model
             $stmt->bindValue(':active', $this->active, PDO::PARAM_INT);
             $stmt->bindValue(':unlimited', $this->unlimited, PDO::PARAM_INT);
             $stmt->bindValue(':location', $this->location, PDO::PARAM_STR);
-            
-            return $stmt->execute();
 
+            return $stmt->execute();
         }
 
         return false;
+    }
+
+    public static function findByName($name)
+    {
+        $name = trim($name);
+
+        $sql = 'SELECT * from products WHERE ProductName = :name';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindValue(':name', $name, PDO::PARAM_STR);
+        $stmt->setFetchMode(PDO::FETCH_CLASS, '\App\Models\Product');
+        $stmt->execute();
+
+        return $stmt->fetch();
+    }
+
+    private function validateBeforeSaving()
+    {
+        $this->validateName($this->name);
+        $this->validatePrice($this->price);
+        $this->validateThumbnail();
+        $this->validateIsUnlimited($this->unlimited);
+        $this->validateIsActive($this->active);
+        $this->validateCartDesc($this->cartDesc);
+        $this->validateWeight($this->weight);
+        $this->validateShortDesc($this->shortDesc);
+        $this->validateLongDescription($this->longDesc);
+        $this->validateStock($this->stock);
     }
 
     private function validateName($name)
     {
         $name = trim($name);
         $lengthOfName = intval(strlen($name), 10);
-        
-        if ( $lengthOfName > 100) {
+
+        if ($lengthOfName > 100) {
             $this->errors['name'] = 'The length of the name can\'t be longer than 100 characters.';
             return false;
         }
 
-        if ( $lengthOfName < 1) {
+        if ($lengthOfName < 1) {
             $this->errors['name'] = 'The name can\'t be empty.';
+            return false;
+        }
+
+        if (static::findByName($name)) {
+            $this->errors['name'] = 'This name is being used already.';
             return false;
         }
     }
@@ -101,8 +133,13 @@ class Product extends \Core\Model
     {
         $price = trim($price);
 
-        if(!is_numeric($price)){
+        if (!is_numeric($price)) {
             $this->errors['price'] = 'The price format is invalid.';
+            return false;
+        }
+
+        if ($price < 0) {
+            $this->errors['price'] = 'The price can\'t be less than zero.';
             return false;
         }
     }
@@ -111,8 +148,13 @@ class Product extends \Core\Model
     {
         $weight = trim($weight);
 
-        if(!is_numeric($weight)){
+        if (!is_numeric($weight)) {
             $this->errors['weight'] = 'The weight format is invalid.';
+            return false;
+        }
+
+        if ($weight < 0) {
+            $this->errors['weight'] = 'The weight can\'t be less than zero.';
             return false;
         }
     }
@@ -122,11 +164,10 @@ class Product extends \Core\Model
         $desc = trim($desc);
         $lengthOfDesc = intval(strlen($desc), 10);
 
-        if ( $lengthOfDesc > 100) {
+        if ($lengthOfDesc > 100) {
             $this->errors['cartDesc'] = 'The length of the cart description can\'t be longer than 100 characters.';
             return false;
         }
-
     }
 
     private function validateShortDesc($desc)
@@ -134,11 +175,10 @@ class Product extends \Core\Model
         $desc = trim($desc);
         $lengthOfDesc = intval(strlen($desc), 10);
 
-        if ( $lengthOfDesc > 200) {
+        if ($lengthOfDesc > 200) {
             $this->errors['shortDesc'] = 'The length of the short description can\'t be longer than 200 characters.';
             return false;
         }
-
     }
 
     private function validateLongDescription($desc)
@@ -146,18 +186,17 @@ class Product extends \Core\Model
         $desc = trim($desc);
         $lengthOfDesc = intval(strlen($desc), 10);
 
-        if ( $lengthOfDesc > 500) {
+        if ($lengthOfDesc > 500) {
             $this->errors['shortDesc'] = 'The length of the short description can\'t be longer than 500 characters.';
             return false;
         }
-
     }
 
     private function validateStock($stock)
     {
         $stock = trim($stock);
 
-        if(!is_numeric($stock)){
+        if (!is_numeric($stock)) {
             $this->errors['stock'] = 'The stock format is invalid.';
             return false;
         }
@@ -165,14 +204,13 @@ class Product extends \Core\Model
     //Todo: make sure the value coming matches on of the id category in the data base.
     private function validateCategory($category)
     {
-
     }
 
     private function validateIsActive($value)
     {
         $value = intval(strlen($value), 10);
 
-        if($value !== 0 && $value !== 1){
+        if ($value !== 0 && $value !== 1) {
             $this->errors['active'] = 'Invalid value for active.';
         }
     }
@@ -181,7 +219,7 @@ class Product extends \Core\Model
     {
         $value = intval(strlen($value), 10);
 
-        if($value !== 0 && $value !== 1){
+        if ($value !== 0 && $value !== 1) {
             $this->errors['unlimited'] = 'Invalid value for unlimited.';
         }
     }
@@ -195,16 +233,11 @@ class Product extends \Core\Model
             return;
         }
 
-        if(is_array($uploadResult)){
+        if (is_array($uploadResult)) {
             $this->errors['thumb'] = $uploadResult[0];
             return;
         }
 
         $this->thumb = $uploadResult;
-    }
-
-    private function validateImages()
-    {
-
     }
 }
