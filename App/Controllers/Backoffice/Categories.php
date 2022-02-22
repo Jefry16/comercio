@@ -4,11 +4,9 @@ namespace App\Controllers\Backoffice;
 
 use App\Models\Category;
 use App\Models\Product as ModelsProduct;
-use App\Modules\ImageUpload;
 use \Core\View;
-use Exception;
 
-class Products extends \Core\Controller
+class Categories extends \Core\Controller
 {
     protected function before()
     {
@@ -17,7 +15,7 @@ class Products extends \Core\Controller
 
     public function homeAction()
     {
-        View::renderTemplate('Backoffice/Product/index.html');
+        View::renderTemplate('Backoffice/Product/category.html');
     }
 
     public function addAction()

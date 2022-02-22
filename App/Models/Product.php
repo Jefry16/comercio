@@ -106,6 +106,7 @@ class Product extends \Core\Model
         $this->validateShortDesc($this->shortDesc);
         $this->validateLongDescription($this->longDesc);
         $this->validateStock($this->stock);
+        $this->validateCategory($this->category);
     }
 
     private function validateName($name)
@@ -201,9 +202,13 @@ class Product extends \Core\Model
             return false;
         }
     }
-    //Todo: make sure the value coming matches on of the id category in the data base.
+
     private function validateCategory($category)
     {
+        if(!Category::findById($category)) {
+            $this->errors['category'] = 'This category is invalid';
+            return;
+        }
     }
 
     private function validateIsActive($value)
@@ -239,5 +244,15 @@ class Product extends \Core\Model
         }
 
         $this->thumb = $uploadResult;
+    }
+
+    //todo: validate location in the future
+    private function validateLocation($location)
+    {
+        $location = trim($location);
+
+        if ($location) {
+            
+        }
     }
 }

@@ -13,7 +13,13 @@
             <label>thumbnail <input type="file" name="thumb" accept=".gif, .png, .jpeg, .webp, .svg"></label>
             <label>images <input type="file" name="images[]" accept=".gif, .png, .jpeg, .webp, .svg" multiple></label>
             <label>stock <input type="number" value="0" step="0.01" name="stock"></label>
-            <label>category <input type="number" name="category"></label>
+            <label>category 
+                <select name="category">
+                    {% for c in categories %}
+                        <option value="{{ c.CategoryID }}">{{ c.CategoryName }}</option>
+                    {% endfor %}
+                </select>
+            </label>
             
             <fieldset>
                 <legend>Is active?</legend>

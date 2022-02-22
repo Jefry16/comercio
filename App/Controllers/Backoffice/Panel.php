@@ -2,6 +2,7 @@
 
 namespace App\Controllers\Backoffice;
 
+use App\Models\Category;
 use \Core\View;
 
 
