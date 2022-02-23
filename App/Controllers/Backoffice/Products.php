@@ -17,26 +17,39 @@ class Products extends \Core\Controller
 
     public function homeAction()
     {
-        View::renderTemplate('Backoffice/Product/index.html');
+        $paginatedProducts = ModelsProduct::getAllByPage();
+
+        View::renderTemplate('Backoffice/Product/index.html', [
+            'pagination' => $paginatedProducts
+        ]);
     }
 
     public function addAction()
     {
         $categories = Category::getAll();
 
-        if($this->checkRequestMethod('POST')){
-            $product = new ModelsProduct($_POST);
+        if($this->postRequest()){
+
+            $this->handleAdd();
+
+        } else {
+
+            View::renderTemplate('Backoffice/Product/add.html', [
+                'categories' => $categories
+            ]);
+        }
+    }
+
+
+    private function handleAdd()
+    {
+        $product = new ModelsProduct($_POST);
            
             $product->save();
             
             if(!empty($product->errors)){
                 var_dump($product->errors);
             }
-        } else {
-            View::renderTemplate('Backoffice/Product/add.html', [
-                'categories' => $categories
-            ]);
-        }
     }
 
 

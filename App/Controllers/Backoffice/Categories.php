@@ -15,26 +15,19 @@ class Categories extends \Core\Controller
 
     public function homeAction()
     {
-        View::renderTemplate('Backoffice/Product/category.html');
+        View::renderTemplate('Backoffice/Category/index.html');
     }
 
     public function addAction()
     {
-        $categories = Category::getAll();
+        View::renderTemplate('Backoffice/Category/add.html');        
+    }
 
-        if($this->checkRequestMethod('POST')){
-            $product = new ModelsProduct($_POST);
-           
-            $product->save();
-            
-            if(!empty($product->errors)){
-                var_dump($product->errors);
-            }
-        } else {
-            View::renderTemplate('Backoffice/Product/add.html', [
-                'categories' => $categories
-            ]);
-        }
+    
+
+    private function okAction()
+    {
+        echo 'ok';
     }
 
 

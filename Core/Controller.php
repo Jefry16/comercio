@@ -110,6 +110,11 @@ abstract class Controller
         }
     }
 
+    protected function postRequest()
+    {
+        return $_SERVER['REQUEST_METHOD'] == 'POST';
+    }
+
 
     protected function checkRequestMethod($method)
     {

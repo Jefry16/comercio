@@ -26,4 +26,5 @@ session_start();
 $router = new Core\Router();
 //backoffice routes
 $router->add('admin/{controller}/{action}', ['namespace' => 'Backoffice']);
+ 
 $router->dispatch($_SERVER['QUERY_STRING']);

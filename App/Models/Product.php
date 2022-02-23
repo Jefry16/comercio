@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Modules\ImageUpload;
+use App\Modules\Paginator;
 use App\Modules\Token;
 use PDO;
 
@@ -17,6 +18,13 @@ class Product extends \Core\Model
         foreach ($data as $key => $value) {
             $this->$key = $value;
         }
+    }
+
+    public static function getAllByPage()
+    {
+        $db = static::getDB();
+
+        return new Paginator($_GET, 1, $db, 'products');
     }
 
     public function save()
