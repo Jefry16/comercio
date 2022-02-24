@@ -5,6 +5,7 @@ namespace App\Controllers\Backoffice;
 use App\Models\Category;
 use App\Models\Product as ModelsProduct;
 use App\Modules\ImageUpload;
+use App\Modules\Message;
 use \Core\View;
 use Exception;
 
@@ -28,29 +29,12 @@ class Products extends \Core\Controller
     {
         $categories = Category::getAll();
 
-        if($this->postRequest()){
+        $errors = $this->handleAdd(ModelsProduct::class, 'product');
 
-            $this->handleAdd();
-
-        } else {
-
-            View::renderTemplate('Backoffice/Product/add.html', [
-                'categories' => $categories
-            ]);
-        }
+        View::renderTemplate('Backoffice/Product/add.html', [
+            'categories' => $categories,
+            'errors' => $errors,
+            'inputs' => $_POST
+        ]);
     }
-
-
-    private function handleAdd()
-    {
-        $product = new ModelsProduct($_POST);
-           
-            $product->save();
-            
-            if(!empty($product->errors)){
-                var_dump($product->errors);
-            }
-    }
-
-
 }

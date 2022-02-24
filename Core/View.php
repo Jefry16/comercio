@@ -50,6 +50,7 @@ class View
             $twig = new \Twig\Environment($loader);
 
             $twig->addGlobal('admin', \App\Modules\Auth::getAdminType());
+            $twig->addGlobal('messages', \App\Modules\Message::get());
             
         }
         echo $twig->render($template, $args);

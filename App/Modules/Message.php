@@ -12,8 +12,8 @@ use App\Models\User;
 class Message
 {
     const SUCCESS = "success";
-    const INFO = 'warning';
-    const FAIL = 'danger';
+    const INFO = 'info';
+    const FAIL = 'fail';
 
     public static function set($message, $type ="success") 
     {

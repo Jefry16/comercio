@@ -9,7 +9,9 @@
     <link rel="stylesheet" href="/css/global.css">
 </head>
 <body>
-
+    {% for m in messages %}
+        <div>{{ m.message}}</div>
+    {% endfor %}
     {% if admin %}
         <div class="container">
             {% include "Themes/sidebar.html" %}

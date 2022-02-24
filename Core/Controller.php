@@ -5,7 +5,7 @@ namespace Core;
 use App\Config;
 
 use App\Modules\Auth;
-use App\Modules\Flashmessage;
+use App\Modules\Message;
 
 /**
  * Base controller
@@ -121,5 +121,17 @@ abstract class Controller
         return $_SERVER['REQUEST_METHOD'] === $method;
     }
 
+    protected function handleAdd($model, $entityName)
+    {
+        if ($this->postRequest()) {
+            $entity = new $model($_POST);
+
+            if ($entity->save()) {
+                $_POST = [];
+                Message::set("A new $entityName was added.", Message::SUCCESS);
+            }
+            return count($entity->errors) > 0 ? $entity->errors : null;
+        }
+    }
 
 }

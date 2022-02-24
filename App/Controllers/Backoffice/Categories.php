@@ -4,6 +4,7 @@ namespace App\Controllers\Backoffice;
 
 use App\Models\Category;
 use App\Models\Product as ModelsProduct;
+use App\Modules\Paginator;
 use \Core\View;
 
 class Categories extends \Core\Controller
@@ -15,20 +16,21 @@ class Categories extends \Core\Controller
 
     public function homeAction()
     {
-        View::renderTemplate('Backoffice/Category/index.html');
+        $paginatedCategories = Category::getAllByPage();
+        var_dump($paginatedCategories);
+        View::renderTemplate('Backoffice/Category/index.html', [
+            'categories' => $paginatedCategories
+        ]);
     }
 
     public function addAction()
     {
-        View::renderTemplate('Backoffice/Category/add.html');        
+        $errors = $this->handleAdd(Category::class, 'category');
+
+        View::renderTemplate('Backoffice/Category/add.html', [
+            'errors' => $errors,
+            'inputs' => $_POST
+        ]);        
     }
-
-    
-
-    private function okAction()
-    {
-        echo 'ok';
-    }
-
 
 }
