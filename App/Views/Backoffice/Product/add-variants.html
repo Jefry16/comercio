@@ -2,9 +2,6 @@
 
 {% block content %}
     <div class="container">
-        <h1>Variants</h1>
-        <p>var</p>
-
         <form action="/admin/products/add-variant" method="POST" enctype="multipart/form-data">
             <h1>add a new variant</h1>
             <label>name <input type="text" name="name" value="{{inputs.name}}"></label>

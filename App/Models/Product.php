@@ -23,8 +23,8 @@ class Product extends \Core\Model
     public static function getAllByPage()
     {
         $db = static::getDB();
-        var_dump(static::getProductVariants(1));
-        return new Paginator($_GET, 1, $db, 'products');
+        
+        return new Paginator($_GET, 10, $db, 'products');
     }
 
     public function save()
@@ -46,7 +46,8 @@ class Product extends \Core\Model
             ProductStock, 
             ProductLive, 
             ProductUnlimited, 
-            ProductLocation) 
+            ProductLocation,
+            ProductSlug) 
             VALUES
             (:SKU, 
             :name, 
@@ -61,7 +62,8 @@ class Product extends \Core\Model
             :stock, 
             :active, 
             :unlimited, 
-            :location)";
+            :location,
+            :slug)";
             $db = static::getDB();
             $stmt = $db->prepare($sql);
             $SKU = new Token();
@@ -79,6 +81,7 @@ class Product extends \Core\Model
             $stmt->bindValue(':active', $this->active, PDO::PARAM_INT);
             $stmt->bindValue(':unlimited', $this->unlimited, PDO::PARAM_INT);
             $stmt->bindValue(':location', $this->location, PDO::PARAM_STR);
+            $stmt->bindValue(':slug', $this->slug($this->name), PDO::PARAM_STR);
 
             return $stmt->execute();
         }
@@ -299,4 +302,5 @@ class Product extends \Core\Model
 
         return $variantsArray;
     }
+
 }

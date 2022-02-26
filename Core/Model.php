@@ -32,4 +32,16 @@ abstract class Model
 
         return $db;
     }
+
+    protected function slug($text)
+    {   
+        $slug = '';
+        $text = trim(strtolower($text));
+        $text = explode(' ', $text);
+
+        foreach ($text as $value) {
+            $slug .= $value.'-'; 
+        }
+        return substr($slug, 0, -1);
+    }
 }

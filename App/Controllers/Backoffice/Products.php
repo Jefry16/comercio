@@ -4,10 +4,8 @@ namespace App\Controllers\Backoffice;
 
 use App\Models\Category;
 use App\Models\Product as ModelsProduct;
-use App\Modules\ImageUpload;
-use App\Modules\Message;
+use App\Models\Variant;
 use \Core\View;
-use Exception;
 
 class Products extends \Core\Controller
 {
@@ -18,7 +16,6 @@ class Products extends \Core\Controller
 
     public function homeAction()
     {
-        
         $paginatedProducts = ModelsProduct::getAllByPage();
 
         View::renderTemplate('Backoffice/Product/index.html', [
@@ -36,6 +33,16 @@ class Products extends \Core\Controller
             'categories' => $categories,
             'errors' => $errors,
             'inputs' => $_POST
+        ]);
+    }
+
+    public function addVariantAction()
+    {
+        $errors = $this->handleAdd(Variant::class, 'Variant');
+
+        View::renderTemplate('Backoffice/Product/variants.html', [
+            'inputs' => $_POST,
+            'errors' => $errors
         ]);
     }
 
