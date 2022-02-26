@@ -23,7 +23,7 @@ class Product extends \Core\Model
     public static function getAllByPage()
     {
         $db = static::getDB();
-
+        var_dump(static::getProductVariants(1));
         return new Paginator($_GET, 1, $db, 'products');
     }
 
@@ -213,7 +213,7 @@ class Product extends \Core\Model
 
     private function validateCategory($category)
     {
-        if(!Category::findById($category)) {
+        if (!Category::findById($category)) {
             $this->errors['category'] = 'This category is invalid';
             return;
         }
@@ -260,7 +260,43 @@ class Product extends \Core\Model
         $location = trim($location);
 
         if ($location) {
-            
         }
+    }
+
+    public static function getProductVariants($id)
+    {
+        $sql = "SELECT * FROM productoptions INNER JOIN options on productoptions.OptionID = options.OptionID INNER JOIN optiongroups
+        ON productoptions.OptionGroupID = optiongroups.OptionGroupID WHERE productoptions.ProductID = :id";
+        
+        $db = static::getDB();
+
+        $stmt = $db->prepare($sql);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+        $stmt->execute();
+        
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
+        $variantsToBeTreated = [];
+        $variantsArray = [];
+
+        foreach ($rows as $key => $one) {
+
+            $data[] = $one['OptionGroupName'];
+
+            foreach ($one as $key => $two) {
+
+                foreach ($data as $three) {
+
+                    if ($three == $two) {
+                        $variantsToBeTreated[$two][] = $one['OptionName'];
+                    }
+                }
+            }
+        }
+
+        foreach ($variantsToBeTreated as $key => $val) {
+            $variantsArray[$key] = array_unique($val);
+        }
+
+        return $variantsArray;
     }
 }

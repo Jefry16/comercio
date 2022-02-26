@@ -18,6 +18,7 @@ class Products extends \Core\Controller
 
     public function homeAction()
     {
+        
         $paginatedProducts = ModelsProduct::getAllByPage();
 
         View::renderTemplate('Backoffice/Product/index.html', [
@@ -36,5 +37,10 @@ class Products extends \Core\Controller
             'errors' => $errors,
             'inputs' => $_POST
         ]);
+    }
+
+    public function variantsAction()
+    {
+        View::renderTemplate('Backoffice/Product/variants.html');
     }
 }
