@@ -5,6 +5,7 @@ namespace App\Controllers\Backoffice;
 use App\Models\Category;
 use App\Models\Product as ModelsProduct;
 use App\Models\Variant;
+use App\Modules\Message;
 use \Core\View;
 
 class Products extends \Core\Controller
@@ -36,18 +37,16 @@ class Products extends \Core\Controller
         ]);
     }
 
-    public function addVariantAction()
+    public function variantsAction()
     {
-        $errors = $this->handleAdd(Variant::class, 'Variant');
+        $errors = $this->handleAdd(Variant::class, 'variant');
+
+        $variants = Variant::getAll();
 
         View::renderTemplate('Backoffice/Product/variants.html', [
+            'variants' => $variants,
             'inputs' => $_POST,
             'errors' => $errors
         ]);
-    }
-
-    public function variantsAction()
-    {
-        View::renderTemplate('Backoffice/Product/variants.html');
     }
 }

@@ -15,6 +15,12 @@ class Variant extends \Core\Model
         }
     }
 
+    public static function getAll()
+    {
+        $db = static::getDB();
+        $stmt = $db->query('SELECT * FROM optiongroups');
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
 
     public function save()
     {

@@ -128,7 +128,7 @@ abstract class Controller
 
             if ($entity->save()) {
                 $_POST = [];
-                Message::set("A new $entityName was added.", Message::SUCCESS);
+                $this->redirect("/admin/helper/index?entityname=$entityName");
             }
             return count($entity->errors) > 0 ? $entity->errors : null;
         }
