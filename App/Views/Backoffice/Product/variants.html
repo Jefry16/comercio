@@ -4,7 +4,15 @@
     <div class="container">
         <h1>Variants</h1>
         {% for v in variants %}
-            <p>{{v.OptionGroupName}}</p>
+            <form action="/admin/products/option" method="post">
+                <label>
+                    {{v.OptionGroupName}}
+                    <input type="text" name="name" id="">
+                </label>
+                <input type="hidden" name="optionid" value="{{v.OptionGroupID}}">
+                <button>add</button>
+            </form>
+            {# <p>{{v.OptionGroupName}}</p> #}
         {% endfor %}
 
         <form action="/admin/products/variants" method="POST" enctype="multipart/form-data">
