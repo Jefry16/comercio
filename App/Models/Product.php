@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Modules\ImageUpload;
 use App\Modules\Paginator;
 use App\Modules\Token;
+use DateTime;
 use PDO;
 
 
@@ -33,54 +34,32 @@ class Product extends \Core\Model
 
         if (empty($this->errors)) {
             $sql = "INSERT INTO products 
-            (ProductSKU, 
-            ProductName, 
-            ProductPrice, 
-            ProductWeight, 
-            ProductCartDesc, 
-            ProductShortDesc, 
-            ProductLongDesc,
-            ProductThumb, 
-            ProductImage, 
-            ProductCategoryID, 
-            ProductStock, 
-            ProductLive, 
-            ProductUnlimited, 
-            ProductLocation,
-            ProductSlug) 
+            (sku, 
+            name, 
+            active, 
+            shortDescription, 
+            longDescription,
+            cartDescription, 
+            thumbnail,
+            slug) 
             VALUES
-            (:SKU, 
+            (:sku, 
             :name, 
-            :price, 
-            :weight, 
-            :cartDesc,
-            :shortDesc, 
-            :longDesc, 
-            :thumb, 
-            :images, 
-            :category, 
-            :stock, 
             :active, 
-            :unlimited, 
-            :location,
+            :shortDescription, 
+            :longDescription, 
+            :cartDescription, 
+            :thumbnail,
             :slug)";
             $db = static::getDB();
             $stmt = $db->prepare($sql);
-            $SKU = new Token();
-            $stmt->bindValue(':SKU', $SKU->getValue(), PDO::PARAM_STR);
+            $stmt->bindValue(':sku', $this->createSku(), PDO::PARAM_STR);
             $stmt->bindValue(':name', $this->name, PDO::PARAM_STR);
-            $stmt->bindValue(':price', $this->price, PDO::PARAM_INT);
-            $stmt->bindValue(':weight', $this->weight, PDO::PARAM_INT);
-            $stmt->bindValue(':cartDesc', $this->cartDesc, PDO::PARAM_STR);
-            $stmt->bindValue(':shortDesc', $this->shortDesc, PDO::PARAM_STR);
-            $stmt->bindValue(':longDesc', $this->longDesc, PDO::PARAM_STR);
-            $stmt->bindValue(':thumb', $this->thumb, PDO::PARAM_STR);
-            $stmt->bindValue(':images', ImageUpload::imagesFromNewProduct(), PDO::PARAM_STR);
-            $stmt->bindValue(':category', $this->category, PDO::PARAM_INT);
-            $stmt->bindValue(':stock', $this->stock, PDO::PARAM_INT);
-            $stmt->bindValue(':active', $this->active, PDO::PARAM_INT);
-            $stmt->bindValue(':unlimited', $this->unlimited, PDO::PARAM_INT);
-            $stmt->bindValue(':location', $this->location, PDO::PARAM_STR);
+            $stmt->bindValue(':active', $this->active, PDO::PARAM_BOOL);
+            $stmt->bindValue(':shortDescription', $this->shortDescription, PDO::PARAM_STR);
+            $stmt->bindValue(':longDescription', $this->longDescription, PDO::PARAM_STR);
+            $stmt->bindValue(':cartDescription', $this->cartDescription, PDO::PARAM_STR);
+            $stmt->bindValue(':thumbnail', 'thumbnail', PDO::PARAM_STR);
             $stmt->bindValue(':slug', $this->slug($this->name), PDO::PARAM_STR);
 
             return $stmt->execute();
@@ -93,7 +72,7 @@ class Product extends \Core\Model
     {
         $name = trim($name);
 
-        $sql = 'SELECT * from products WHERE ProductName = :name';
+        $sql = 'SELECT * from products WHERE name = :name';
 
         $db = static::getDB();
         $stmt = $db->prepare($sql);
@@ -108,16 +87,12 @@ class Product extends \Core\Model
     private function validateBeforeSaving()
     {
         $this->validateName($this->name);
-        $this->validatePrice($this->price);
         $this->validateThumbnail();
-        $this->validateIsUnlimited($this->unlimited);
         $this->validateIsActive($this->active);
-        $this->validateCartDesc($this->cartDesc);
-        $this->validateWeight($this->weight);
-        $this->validateShortDesc($this->shortDesc);
-        $this->validateLongDescription($this->longDesc);
-        $this->validateStock($this->stock);
-        $this->validateCategory($this->category);
+        $this->validateCartDesc($this->cartDescription);
+        $this->validateShortDesc($this->shortDescription);
+        $this->validateLongDescription($this->longDescription);
+        $this->validatePrice($this->price);
     }
 
     private function validateName($name)
@@ -177,7 +152,7 @@ class Product extends \Core\Model
         $lengthOfDesc = intval(strlen($desc), 10);
 
         if ($lengthOfDesc > 100) {
-            $this->errors['cartDesc'] = 'The length of the cart description can\'t be longer than 100 characters.';
+            $this->errors['cartDescription'] = 'The length of the cart description can\'t be longer than 100 characters.';
             return false;
         }
     }
@@ -188,7 +163,7 @@ class Product extends \Core\Model
         $lengthOfDesc = intval(strlen($desc), 10);
 
         if ($lengthOfDesc > 200) {
-            $this->errors['shortDesc'] = 'The length of the short description can\'t be longer than 200 characters.';
+            $this->errors['shortDescription'] = 'The length of the short description can\'t be longer than 200 characters.';
             return false;
         }
     }
@@ -199,7 +174,7 @@ class Product extends \Core\Model
         $lengthOfDesc = intval(strlen($desc), 10);
 
         if ($lengthOfDesc > 500) {
-            $this->errors['shortDesc'] = 'The length of the short description can\'t be longer than 500 characters.';
+            $this->errors['shortDescription'] = 'The length of the short description can\'t be longer than 500 characters.';
             return false;
         }
     }
@@ -250,20 +225,17 @@ class Product extends \Core\Model
         }
 
         if (is_array($uploadResult)) {
-            $this->errors['thumb'] = $uploadResult[0];
+            $this->errors['thumbnail'] = $uploadResult[0];
             return;
         }
 
         $this->thumb = $uploadResult;
     }
 
-    //todo: validate location in the future
-    private function validateLocation($location)
+    private function createSku()
     {
-        $location = trim($location);
-
-        if ($location) {
-        }
+        $now = new DateTime();
+        return $now->getTimestamp();
     }
 
     public static function getProductVariants($id)
@@ -303,4 +275,19 @@ class Product extends \Core\Model
         return $variantsArray;
     }
 
+    public static function findBySlug($slug)
+    {
+        $slug = trim($slug);
+
+        $sql = 'SELECT * from products WHERE ProductSlug = :slug';
+
+        $db = static::getDB();
+        $stmt = $db->prepare($sql);
+
+        $stmt->bindValue(':slug', $slug, PDO::PARAM_STR);
+        $stmt->setFetchMode(PDO::FETCH_CLASS, '\App\Models\Product');
+        $stmt->execute();
+
+        return $stmt->fetch();
+    }
 }

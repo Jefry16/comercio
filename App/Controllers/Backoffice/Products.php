@@ -18,21 +18,24 @@ class Products extends \Core\Controller
 
     public function homeAction()
     {
+        echo 'here i will show products tabs, such as: best selling, most visisted and so on....';
+    }
+
+    public function listingAction()
+    {
         $paginatedProducts = ModelsProduct::getAllByPage();
 
         View::renderTemplate('Backoffice/Product/index.html', [
-            'pagination' => $paginatedProducts
+            'pagination' => $paginatedProducts,
         ]);
     }
 
     public function addAction()
     {
-        $categories = Category::getAll();
 
         $errors = $this->handleAdd(ModelsProduct::class, 'product');
 
         View::renderTemplate('Backoffice/Product/add.html', [
-            'categories' => $categories,
             'errors' => $errors,
             'inputs' => $_POST
         ]);
@@ -74,7 +77,7 @@ class Products extends \Core\Controller
             Option::addMultipleOptions($optionsToBeSaved, $_POST['optionid']);
         } else {
             Message::set('No option was added. This is because either the options existed already or they were empty.');
-            header('Location:'. $_SERVER['HTTP_REFERER'] , true, 303);
+            header('Location:' . $_SERVER['HTTP_REFERER'], true, 303);
         }
     }
 }

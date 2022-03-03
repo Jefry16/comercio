@@ -25,6 +25,7 @@ session_start();
  */
 $router = new Core\Router();
 //backoffice routes
+$router->add('{slug:[\w-]+}', ['controller' => 'Products', 'action' => 'view', 'namespace' => 'Frontend']);
 $router->add('admin/{controller}/{action}', ['namespace' => 'Backoffice']);
  
 $router->dispatch($_SERVER['QUERY_STRING']);
